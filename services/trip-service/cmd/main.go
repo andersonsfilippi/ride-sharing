@@ -20,11 +20,11 @@ func main() {
 
 	svc := service.NewService(inmemRepo)
 
-	t, err := svc.CreateTrip(ctx, fare)
+	_, err := svc.CreateTrip(ctx, fare)
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(t)
+	// log.Println(t)
 
 	// keep the program running for now
 	for {

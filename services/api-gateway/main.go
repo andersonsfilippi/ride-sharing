@@ -29,23 +29,25 @@ func main() {
 		Handler: mux,
 	}
 
-	serverErrors := make(chan error, 1)
+	serverErr := make(chan error, 1)
 
 	wg := new(sync.WaitGroup)
 
 	wg.Go(func() {
 		log.Printf("Server listening on %s", httpAddr)
-		serverErrors <- server.ListenAndServe()
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			serverErr <- err
+		}
 	})
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	select {
-	case err := <-serverErrors:
+	case err := <-serverErr:
 		log.Printf("Error starting the server: %v", err)
 	case sig := <-shutdown:
-		log.Printf("Server is shuttingdown due to %v signal", sig)
+		log.Printf("Server is shutting down due to %v signal", sig)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()

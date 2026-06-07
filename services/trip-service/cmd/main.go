@@ -37,7 +37,9 @@ func main() {
 
 	wg.Go(func() {
 		log.Printf("Server listening on %s", server.Addr)
-		serverErr <- server.ListenAndServe()
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			serverErr <- err
+		}
 	})
 
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
@@ -46,7 +48,7 @@ func main() {
 	case err := <-serverErr:
 		log.Printf("Error starting server: %v", err)
 	case sig := <-shutdown:
-		log.Printf("Server is shuttingdown due to %v signal", sig)
+		log.Printf("Server is shutting down due to %v signal", sig)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()

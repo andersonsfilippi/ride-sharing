@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-
+	log.Println("Starting Trip Service")
 	inmemRepo := repository.NewInmemRepository()
 	svc := service.NewService(inmemRepo)
 	mux := http.NewServeMux()

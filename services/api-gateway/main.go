@@ -19,9 +19,7 @@ var (
 
 func main() {
 	log.Println("Starting API Gateway")
-
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("POST /trip/preview", handleTripPreview)
 
 	server := &http.Server{

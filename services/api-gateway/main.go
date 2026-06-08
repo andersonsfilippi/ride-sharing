@@ -19,12 +19,18 @@ var (
 
 func main() {
 	log.Println("Starting API Gateway")
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /trip/preview", handleTripPreview)
+
+	mux.HandleFunc("POST /trip/preview", enableCORS(handleTripPreview))
+	mux.HandleFunc("/ws/drivers", handleDriversWebSocket)
+	mux.HandleFunc("/ws/riders", handleRidersWebSocket)
 
 	server := &http.Server{
 		Addr:    httpAddr,
-		Handler: mux,
+		Handler: mux, 
+		// ou enableCORS(mux) para ativar para todos os handlers 
+		// caso seja somente servidor http pois websocket não precisa
 	}
 
 	serverErr := make(chan error, 1)

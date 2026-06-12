@@ -23,13 +23,14 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("POST /trip/preview", enableCORS(handleTripPreview))
+	mux.HandleFunc("POST /trip/start", enableCORS(handleTripStart))
 	mux.HandleFunc("/ws/drivers", handleDriversWebSocket)
 	mux.HandleFunc("/ws/riders", handleRidersWebSocket)
 
 	server := &http.Server{
 		Addr:    httpAddr,
-		Handler: mux, 
-		// ou enableCORS(mux) para ativar para todos os handlers 
+		Handler: mux,
+		// ou enableCORS(mux) para ativar para todos os handlers
 		// caso seja somente servidor http pois websocket não precisa
 	}
 
